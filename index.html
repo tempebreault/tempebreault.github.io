@@ -2,261 +2,814 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Public Dev Diary — TempéBreault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public Dev Diary 2027 — TempéBreault</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Font Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef8ff',
+              100: '#d8f0ff',
+              400: '#38bdf8',
+              500: '#0284c7',
+              600: '#0369a1',
+              900: '#0c4a6e',
+              neon: '#00f0ff',
+              accent: '#6366f1',
+            },
+            cyber: {
+              bg: '#050c1a',
+              card: 'rgba(11, 23, 42, 0.65)',
+              glass: 'rgba(255, 255, 255, 0.03)',
+              border: 'rgba(255, 255, 255, 0.08)',
+              glow: 'rgba(0, 240, 255, 0.15)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    :root{
-      --bg:#071428;
-      --panel:#0b3b73;
-      --muted:#a9c6ff;
-      --glass: rgba(255,255,255,0.04);
-      --accent: #0b6efd;
-      --accent-2: #4ea3ff;
-      --card:#06203a;
-      --text: #eaf2ff;
-      --max-width:1100px;
-      --radius:12px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    body {
+      background-color: #050c1a;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(0, 240, 255, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: #e2e8f0;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      background:linear-gradient(180deg,var(--bg),#021022 80%);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      padding:32px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
+    .glass-panel {
+      background: rgba(11, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
 
-    .app{
-      width:100%;max-width:var(--max-width);
-      background:linear-gradient(180deg, rgba(11,110,253,0.05), rgba(10,25,45,0.6));
-      border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,0.04);
-      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+    .glass-panel-interactive {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-panel-interactive:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 240, 255, 0.1);
     }
 
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px; flex-wrap:wrap;}
-    .title{display:flex;gap:12px;align-items:center}
-    .logo{
-      width:56px;height:56px;border-radius:10px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;
-      box-shadow:0 6px 18px rgba(11,110,253,0.2)
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    h1{margin:0;font-size:20px}
-    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 240, 255, 0.4);
+    }
 
-    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-    .btn{background:var(--panel);border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:var(--text);cursor:pointer;font-weight:600}
-    .btn.small{padding:6px 8px;font-size:13px}
-    .indicator{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
-    .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(11,110,253,0.25)}
-
-    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
-
-    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-    .search{display:flex;gap:8px;margin-bottom:12px}
-    .search input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
-
-    .legend{margin-top:8px;font-size:0.85rem}
-    .legend .row{display:flex;gap:8px;align-items:flex-start;padding:6px 6px;border-radius:6px}
-    .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 7px;border-radius:999px;font-weight:700;font-size:11px}
-    .badge.released{background:linear-gradient(90deg,#052b48,#0b6efd);box-shadow:0 6px 12px rgba(11,110,253,0.10)}
-    .badge.active{background:linear-gradient(90deg,#044169,#3aa0ff);}
-    .badge.inprogress{background:linear-gradient(90deg,#052b48,#1b8cff);}
-    .badge.archived{background:linear-gradient(90deg,#0b3b73,#133b4f);opacity:0.85}
-
-    .stats{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-    .stat{display:flex;justify-content:space-between;font-size:13px;padding:8px;border-radius:8px;background:var(--glass)}
-
-    .content{display:flex;flex-direction:column;gap:12px}
-    section.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-    .card h2{margin:0;font-size:15px}
-    .card .sub{color:var(--muted);font-size:13px;margin-top:6px}
-
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    thead th{font-size:12px;text-align:left;padding:10px 6px;color:var(--muted);border-bottom:1px dashed rgba(255,255,255,0.03)}
-    tbody tr{transition:background 0.15s;border-radius:8px}
-    tbody tr:hover{background:rgba(255,255,255,0.02)}
-    td{padding:12px 6px;vertical-align:middle}
-    .name{font-weight:700}
-    .meta-tags{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap}
-    td .note{display:block;white-space:normal;word-break:break-word;max-width:52ch;color:var(--muted);margin-top:6px;line-height:1.35}
-
-    .progress{height:8px;background:rgba(255,255,255,0.04);border-radius:6px;overflow:hidden;width:140px}
-    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:6px}
-
-    .actions{display:flex;gap:8px;align-items:center}
-    .tiny{padding:6px;border-radius:8px;font-size:13px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
-
-    .modal-backdrop{position:fixed;inset:0;background:linear-gradient(180deg,rgba(1,5,13,0.6),rgba(1,5,13,0.8));display:none;align-items:center;justify-content:center;padding:24px;z-index:60}
-    .modal-backdrop.show{display:flex}
-    .modal{width:100%;max-width:720px;background:linear-gradient(180deg,#021428,#041828);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-    .modal .row{display:flex;gap:8px}
-    .modal label{font-size:13px;color:var(--muted)}
-    .form-control{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);pointer-events:none;}
-
-    .history-list{max-height:320px;overflow:auto;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);}
-    .history-item{padding:8px;border-radius:8px;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:13px;color:var(--muted)}
-    .history-item pre{white-space:pre-wrap;margin:6px 0;max-height:200px;overflow:auto;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;pointer-events:none;}
-
-    @media (max-width:900px){
-      .grid{grid-template-columns:1fr;}
-      .title{flex-direction:column;align-items:flex-start}
+    .glow-text {
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
     }
   </style>
 </head>
-<body>
-  <div class="app" role="application" aria-label="Public Development Diary">
-    <header>
-      <div class="title">
-        <div class="logo">DD</div>
-        <div>
-          <h1>Public Dev Diary</h1>
-          <p class="lead">Publicly viewable dev diary of TempéBreault</p>
+<body class="font-sans antialiased min-h-screen p-3 sm:p-6 lg:p-8 custom-scrollbar">
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header Section -->
+    <header class="glass-panel rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4 border border-cyber-border relative overflow-hidden">
+      <!-- Ambient Glow Behind Header Logo -->
+      <div class="absolute -left-10 -top-10 w-40 h-40 bg-brand-neon/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex items-center gap-4 z-10 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-xl bg-gradient-to-tr from-brand-accent via-brand-500 to-brand-neon p-[1px] shadow-lg shadow-brand-500/20">
+            <div class="w-full h-full bg-slate-950/90 rounded-[11px] flex items-center justify-center font-bold text-xl text-brand-neon tracking-wider">
+              DD
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">Public Dev Diary</h1>
+              <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-brand-500/10 text-brand-neon border border-brand-500/30">2027 v3.0</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-400">Publicly viewable development telemetry &amp; timeline of <span class="text-slate-200 font-medium">TempéBreault</span></p>
+          </div>
+        </div>
+
+        <!-- Mobile Readonly Indicator -->
+        <div class="md:hidden">
+          <span id="modeBadgeMobile" class="px-2.5 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Read-Only
+          </span>
         </div>
       </div>
 
-      <div class="controls">
-        <div class="indicator"><span class="dot" aria-hidden></span><span id="modeLabel">Read-only</span></div>
+      <!-- Telemetry Status Bar -->
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono z-10 w-full md:w-auto justify-end">
+        <div class="glass-panel px-3 py-1.5 rounded-lg flex items-center gap-2 text-slate-300">
+          <i class="fa-regular fa-clock text-brand-400"></i>
+          <span id="stardateClock" class="tracking-wide">UTC --:--:--</span>
+        </div>
+        
+        <button id="adminToggleBtn" onclick="toggleAdminMode()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200 transition-all flex items-center gap-2 cursor-pointer">
+          <i id="adminIcon" class="fa-solid fa-lock text-amber-400"></i>
+          <span id="adminModeText">Read-Only</span>
+        </button>
+
+        <button onclick="exportJSON()" class="px-3 py-1.5 rounded-lg border border-brand-500/30 bg-brand-500/10 hover:bg-brand-500/20 text-brand-neon transition-all flex items-center gap-1.5 cursor-pointer">
+          <i class="fa-solid fa-download"></i> Export JSON
+        </button>
       </div>
     </header>
 
-    <div class="grid">
-      <aside class="panel">
-        <div class="search">
-          <input id="searchInput" placeholder="Search projects, tags, notes..." />
+    <!-- Dashboard Statistics Row -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div onclick="setFilterTag('all')" class="glass-panel glass-panel-interactive p-4 rounded-xl cursor-pointer">
+        <div class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1 flex items-center justify-between">
+          <span>Total Projects</span>
+          <i class="fa-solid fa-folder-open text-brand-400"></i>
         </div>
+        <div class="text-2xl sm:text-3xl font-black text-white font-mono" id="statTotal">0</div>
+        <div class="text-[11px] text-slate-500 mt-1">Tracked entries</div>
+      </div>
 
-        <div class="legend" aria-hidden="false">
-          <div style="display:flex;justify-content:space-between;align-items:center"><strong>Legend</strong><span class="note">What each status means</span></div>
-          <div class="row" style="margin-top:8px"><div class="badge released">Released</div><div class="note">Product complete and available (may receive updates).</div></div>
-          <div class="row"><div class="badge active">Developed • Active</div><div class="note">Released and actively maintained.</div></div>
-          <div class="row"><div class="badge inprogress">In development</div><div class="note">Under construction — not released yet.</div></div>
-          <div class="row"><div class="badge archived">Archived</div><div class="note">No longer maintained.</div></div>
+      <div onclick="setFilterTag('Released')" class="glass-panel glass-panel-interactive p-4 rounded-xl cursor-pointer">
+        <div class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1 flex items-center justify-between">
+          <span>Released</span>
+          <i class="fa-solid fa-circle-check text-emerald-400"></i>
         </div>
+        <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono" id="statDev">0</div>
+        <div class="text-[11px] text-slate-500 mt-1">Production ready</div>
+      </div>
 
-        <div class="stats">
-          <div class="stat"><div>Projects</div><div id="statTotal">0</div></div>
-          <div class="stat"><div>Developed / Released</div><div id="statDev">0</div></div>
-          <div class="stat"><div>In Development</div><div id="statIn">0</div></div>
-          <div class="stat"><div>Archived</div><div id="statArc">0</div></div>
+      <div onclick="setFilterTag('In Development')" class="glass-panel glass-panel-interactive p-4 rounded-xl cursor-pointer">
+        <div class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1 flex items-center justify-between">
+          <span>In Progress</span>
+          <i class="fa-solid fa-spinner text-amber-400"></i>
+        </div>
+        <div class="text-2xl sm:text-3xl font-black text-amber-400 font-mono" id="statIn">0</div>
+        <div class="text-[11px] text-slate-500 mt-1">Active builds</div>
+      </div>
+
+      <div onclick="setFilterTag('Archived')" class="glass-panel glass-panel-interactive p-4 rounded-xl cursor-pointer">
+        <div class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1 flex items-center justify-between">
+          <span>Archived</span>
+          <i class="fa-solid fa-box-archive text-slate-400"></i>
+        </div>
+        <div class="text-2xl sm:text-3xl font-black text-slate-400 font-mono" id="statArc">0</div>
+        <div class="text-[11px] text-slate-500 mt-1">Legacy systems</div>
+      </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Sidebar Control Panel -->
+      <aside class="lg:col-span-4 space-y-4">
+        <div class="glass-panel p-5 rounded-xl space-y-4">
+          <!-- Search Bar -->
+          <div>
+            <label for="searchInput" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Search Repository</label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+              <input id="searchInput" type="text" placeholder="Filter by title, tag, notes..." class="w-full pl-9 pr-8 py-2.5 bg-slate-950/60 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all">
+              <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Filter Pills -->
+          <div>
+            <div class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Status Filters</div>
+            <div class="flex flex-wrap gap-1.5" id="filterPillsContainer">
+              <button onclick="setFilterTag('all')" class="filter-pill px-3 py-1 rounded-md text-xs font-medium bg-brand-500 text-white border border-brand-400/30">All</button>
+              <button onclick="setFilterTag('Released')" class="filter-pill px-3 py-1 rounded-md text-xs font-medium bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50">Released</button>
+              <button onclick="setFilterTag('In Development')" class="filter-pill px-3 py-1 rounded-md text-xs font-medium bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50">In Dev</button>
+              <button onclick="setFilterTag('Archived')" class="filter-pill px-3 py-1 rounded-md text-xs font-medium bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50">Archived</button>
+            </div>
+          </div>
+
+          <!-- Status Legend -->
+          <div class="pt-3 border-t border-slate-800/60 space-y-2">
+            <div class="flex justify-between items-center text-xs text-slate-300 font-semibold uppercase tracking-wider">
+              <span>Status Legend</span>
+              <i class="fa-solid fa-circle-info text-slate-500"></i>
+            </div>
+            
+            <div class="space-y-2 text-xs">
+              <div class="flex items-start gap-2.5 p-2 rounded-lg bg-slate-900/40 border border-slate-800/50">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-500/20 text-brand-neon border border-brand-500/40 mt-0.5">Released</span>
+                <span class="text-slate-400 leading-tight">Product complete and available (may receive live patches).</span>
+              </div>
+              <div class="flex items-start gap-2.5 p-2 rounded-lg bg-slate-900/40 border border-slate-800/50">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 mt-0.5">Active</span>
+                <span class="text-slate-400 leading-tight">Released and under continuous active maintenance.</span>
+              </div>
+              <div class="flex items-start gap-2.5 p-2 rounded-lg bg-slate-900/40 border border-slate-800/50">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 mt-0.5">In Dev</span>
+                <span class="text-slate-400 leading-tight">Under construct phase — not released yet.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Add Action Button -->
+          <div id="adminControlsPanel" class="pt-3 border-t border-slate-800/60 hidden">
+            <button onclick="openAddModal()" class="w-full py-2.5 px-4 rounded-lg bg-gradient-to-r from-brand-600 to-brand-accent hover:from-brand-500 hover:to-indigo-500 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-md shadow-brand-500/20 flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-plus"></i> Add New Project
+            </button>
+          </div>
         </div>
       </aside>
 
-      <main class="content">
-        <section class="card" aria-labelledby="developedHeading">
-          <h2 id="developedHeading">Developed / Released</h2>
-          <div class="sub">Stable projects and products (includes items under active maintenance)</div>
-          <table id="developedTable" aria-describedby="developedHeading">
-            <thead>
-              <tr><th>Project</th><th>Tags &amp; Notes</th><th>Progress</th><th>Version</th><th style="width:120px">History</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+      <!-- Right Main Content Panel -->
+      <main class="lg:col-span-8 space-y-6">
+
+        <!-- Display Toggle Header Bar -->
+        <div class="flex items-center justify-between glass-panel px-4 py-3 rounded-xl">
+          <div class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+            <span>Project Index</span>
+            <span id="filteredCountBadge" class="text-xs font-mono bg-slate-800 px-2 py-0.5 rounded-full text-slate-400">8</span>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <!-- Grid vs Table View Switch -->
+            <div class="bg-slate-950/80 p-1 rounded-lg border border-slate-800 flex items-center gap-1">
+              <button id="viewTableBtn" onclick="setViewMode('table')" class="px-2.5 py-1 rounded text-xs text-brand-neon bg-brand-500/20 font-medium transition-all" title="Table View">
+                <i class="fa-solid fa-list"></i>
+              </button>
+              <button id="viewGridBtn" onclick="setViewMode('grid')" class="px-2.5 py-1 rounded text-xs text-slate-400 hover:text-slate-200 font-medium transition-all" title="Grid Cards View">
+                <i class="fa-solid fa-grip-vertical"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 1: Developed & Released -->
+        <section class="glass-panel rounded-xl p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-rocket text-brand-400"></i> Developed / Released
+              </h2>
+              <p class="text-xs text-slate-400">Stable products and maintained active modules</p>
+            </div>
+            <span class="text-xs font-mono px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20">Production</span>
+          </div>
+
+          <!-- Table Container -->
+          <div id="developedTableView" class="overflow-x-auto">
+            <table class="w-full text-left text-xs" id="developedTable">
+              <thead>
+                <tr class="text-slate-400 border-b border-slate-800/80">
+                  <th class="pb-2 font-semibold">Project Name</th>
+                  <th class="pb-2 font-semibold">Tags &amp; Notes</th>
+                  <th class="pb-2 font-semibold min-w-[120px]">Completion</th>
+                  <th class="pb-2 font-semibold">Version</th>
+                  <th class="pb-2 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/40 text-slate-200"></tbody>
+            </table>
+          </div>
+
+          <!-- Grid View Container -->
+          <div id="developedGridView" class="grid grid-cols-1 sm:grid-cols-2 gap-4 hidden"></div>
         </section>
 
-        <section class="card" aria-labelledby="devHeading">
-          <h2 id="devHeading">In Development</h2>
-          <div class="sub">Currently being worked on — expect frequent updates and changes</div>
-          <table id="devTable">
-            <thead>
-              <tr><th>Project</th><th>Tags &amp; Notes</th><th>Progress</th><th>Version</th><th style="width:120px">History</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <!-- Section 2: In Development -->
+        <section class="glass-panel rounded-xl p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-code-branch text-amber-400"></i> In Development
+              </h2>
+              <p class="text-xs text-slate-400">Under construction — feature changes and builds in progress</p>
+            </div>
+            <span class="text-xs font-mono px-2 py-1 bg-amber-500/10 text-amber-400 rounded-md border border-amber-500/20">Active Stage</span>
+          </div>
+
+          <!-- Table Container -->
+          <div id="devTableView" class="overflow-x-auto">
+            <table class="w-full text-left text-xs" id="devTable">
+              <thead>
+                <tr class="text-slate-400 border-b border-slate-800/80">
+                  <th class="pb-2 font-semibold">Project Name</th>
+                  <th class="pb-2 font-semibold">Tags &amp; Notes</th>
+                  <th class="pb-2 font-semibold min-w-[120px]">Completion</th>
+                  <th class="pb-2 font-semibold">Version</th>
+                  <th class="pb-2 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/40 text-slate-200"></tbody>
+            </table>
+          </div>
+
+          <!-- Grid View Container -->
+          <div id="devGridView" class="grid grid-cols-1 sm:grid-cols-2 gap-4 hidden"></div>
         </section>
+
       </main>
     </div>
+  </div>
 
-    <div class="modal-backdrop" id="historyModal">
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <h3 id="modalTitle">Project History</h3>
-        <div class="history-list" id="historyList"></div>
-        <div style="text-align:right;margin-top:12px">
-          <button class="btn" onclick="closeModal()">Close</button>
+  <!-- History Timeline Modal -->
+  <div id="historyModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden transition-all">
+    <div class="glass-panel w-full max-w-xl rounded-2xl border border-cyber-border overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 id="modalTitle" class="text-lg font-bold text-white">Project History</h3>
+            <span id="modalVersionBadge" class="text-xs font-mono px-2 py-0.5 rounded bg-brand-500/20 text-brand-neon">v1.0</span>
+          </div>
+          <p id="modalSub" class="text-xs text-slate-400 mt-0.5">Audit log and build revision timeline</p>
         </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body Timeline -->
+      <div class="p-5 overflow-y-auto space-y-4 custom-scrollbar flex-1" id="historyList"></div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-slate-800 bg-slate-900/60 flex items-center justify-between">
+        <span class="text-xs text-slate-500 font-mono">TempéBreault Telemetry 2027</span>
+        <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer">
+          Close Window
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- Add New Project Modal -->
+  <div id="addModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden transition-all">
+    <div class="glass-panel w-full max-w-md rounded-2xl border border-cyber-border overflow-hidden shadow-2xl">
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-square-plus text-brand-400"></i> Add Project Entry
+        </h3>
+        <button onclick="closeAddModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="addProjectForm" onsubmit="handleAddProject(event)" class="p-5 space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Project Name</label>
+          <input id="inputName" required type="text" placeholder="e.g., Quantum Compiler" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Status Tag</label>
+            <select id="inputStatus" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500">
+              <option value="Released">Released</option>
+              <option value="In Development">In Development</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Version Tag</label>
+            <input id="inputVersion" required type="text" placeholder="v1.0.0" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Completion Progress (%)</label>
+          <input id="inputProgress" required type="number" min="0" max="100" value="100" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Notes &amp; Details</label>
+          <textarea id="inputNotes" rows="2" placeholder="Brief project summary..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Initial Revision Log (Line separated)</label>
+          <textarea id="inputHistory" rows="2" placeholder="Created initial repository&#10;Verified build v1.0" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-brand-500"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-400 text-white font-semibold shadow-md shadow-brand-500/20 cursor-pointer">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    const developedProjects=[
-      {name:"Expiry Tracker",tags:["Released"],notes:"Product Complete.",progress:100,version:"v1.0",history:["Created v1.0","Patched minor bug"]},
-      {name:"Word Search",tags:["Released"],notes:"Product complete.",progress:100,version:"v2.3",history:["Created v1.0","Updated to v2.3"]},
-      {name:"Keyboard Karate",tags:["Released"],notes:"Product complete.",progress:100,version:"v2.3",history:["Created v1.0","Updated to v2.3"]},
-      {name:"Emoji Game",tags:["Released"],notes:"Product complete.",progress:100,version:"v2.3",history:["Created v1.0","Updated to v2.3"]},
-      {name:"Reflex Reactor",tags:["Released"],notes:"Product complete.",progress:100,version:"v2.3",history:["Created v1.0","Updated to v2.3"]},
-      {name:"Word Typing Simulator",tags:["Released"],notes:"Product complete.",progress:100,version:"v2.3",history:["Created v1.0","Updated to v2.3"]},
-      {name:"Plumbers handbook",tags:["Released"],notes:"Product Complete.",progress:100,version:"v1.0.0",history:["Released v1.0.0","COMPLETED"]},
-      {name:"Destiny Orb",tags:["Released"],notes:"Product Complete..",progress:100,version:"v1.0.0",history:["Everything has been added."]}
+    // Initial 2027 Seed Data preserving all user's original entries & logs
+    const defaultDevelopedProjects = [
+      { name: "Expiry Tracker", tags: ["Released"], notes: "Product Complete.", progress: 100, version: "v1.0", history: ["Created v1.0", "Patched minor bug"] },
+      { name: "Word Search", tags: ["Released"], notes: "Product complete.", progress: 100, version: "v2.3", history: ["Created v1.0", "Updated to v2.3"] },
+      { name: "Keyboard Karate", tags: ["Released"], notes: "Product complete.", progress: 100, version: "v2.3", history: ["Created v1.0", "Updated to v2.3"] },
+      { name: "Emoji Game", tags: ["Released"], notes: "Product complete.", progress: 100, version: "v2.3", history: ["Created v1.0", "Updated to v2.3"] },
+      { name: "Reflex Reactor", tags: ["Released"], notes: "Product complete.", progress: 100, version: "v2.3", history: ["Created v1.0", "Updated to v2.3"] },
+      { name: "Word Typing Simulator", tags: ["Released"], notes: "Product complete.", progress: 100, version: "v2.3", history: ["Created v1.0", "Updated to v2.3"] },
+      { name: "Plumbers handbook", tags: ["Released"], notes: "Product Complete.", progress: 100, version: "v1.0.0", history: ["Released v1.0.0", "COMPLETED"] },
+      { name: "Destiny Orb", tags: ["Released"], notes: "Product Complete..", progress: 100, version: "v1.0.0", history: ["Everything has been added."] }
     ];
 
-    const devProjects=[
-    ];
+    const defaultDevProjects = [];
 
-    const developedTable=document.querySelector("#developedTable tbody");
-    const devTable=document.querySelector("#devTable tbody");
-    const statTotal=document.getElementById("statTotal");
-    const statDev=document.getElementById("statDev");
-    const statIn=document.getElementById("statIn");
-    const statArc=document.getElementById("statArc");
-    const searchInput=document.getElementById("searchInput");
-    const historyModal=document.getElementById("historyModal");
-    const historyList=document.getElementById("historyList");
+    // State Variables with LocalStorage Support
+    let developedProjects = JSON.parse(localStorage.getItem('tempe_dev_diary_released')) || defaultDevelopedProjects;
+    let devProjects = JSON.parse(localStorage.getItem('tempe_dev_diary_dev')) || defaultDevProjects;
+    
+    let activeFilter = 'all';
+    let currentViewMode = 'table';
+    let isAdmin = false;
 
-    function rowFor(p){
-      const tr=document.createElement("tr");
-      tr.innerHTML=`
-        <td class="name">${p.name}</td>
-        <td><div class="meta-tags">${p.tags.map(t=>`<span class="badge ${t.toLowerCase().replace(" ","")}">${t}</span>`).join("")}<span class="note">${p.notes}</span></div></td>
-        <td><div class="progress"><i style="width:${p.progress}%"></i></div></td>
-        <td>${p.version}</td>
-        <td class="actions"><button class="tiny" onclick="openHistory('${p.name}')">View</button></td>
+    // Save Data to LocalStorage
+    function persistData() {
+      localStorage.setItem('tempe_dev_diary_released', JSON.stringify(developedProjects));
+      localStorage.setItem('tempe_dev_diary_dev', JSON.stringify(devProjects));
+    }
+
+    // Dynamic Clock Function
+    function updateClock() {
+      const now = new Date();
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'UTC' };
+      document.getElementById('stardateClock').textContent = `UTC ${now.toLocaleTimeString('en-US', options)}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Mode Toggle (Read-Only vs Admin Mode)
+    function toggleAdminMode() {
+      isAdmin = !isAdmin;
+      const text = document.getElementById('adminModeText');
+      const icon = document.getElementById('adminIcon');
+      const adminPanel = document.getElementById('adminControlsPanel');
+      const badgeMobile = document.getElementById('modeBadgeMobile');
+
+      if (isAdmin) {
+        text.textContent = 'Admin Mode';
+        icon.className = 'fa-solid fa-lock-open text-emerald-400';
+        adminPanel.classList.remove('hidden');
+        if (badgeMobile) {
+          badgeMobile.className = 'px-2.5 py-1 rounded-full text-xs font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5';
+          badgeMobile.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Admin';
+        }
+      } else {
+        text.textContent = 'Read-Only';
+        icon.className = 'fa-solid fa-lock text-amber-400';
+        adminPanel.classList.add('hidden');
+        if (badgeMobile) {
+          badgeMobile.className = 'px-2.5 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5';
+          badgeMobile.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Read-Only';
+        }
+      }
+      render();
+    }
+
+    // Badge CSS Helper
+    function getBadgeClass(tag) {
+      const t = tag.toLowerCase();
+      if (t.includes('released')) return 'bg-brand-500/20 text-brand-neon border-brand-500/30';
+      if (t.includes('active')) return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+      if (t.includes('in development') || t.includes('in dev')) return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      return 'bg-slate-800 text-slate-400 border-slate-700';
+    }
+
+    // Row Renderer (Table View)
+    function renderTableRow(p) {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-slate-900/40 transition-colors group';
+      
+      const badgeClass = getBadgeClass(p.tags[0] || 'Released');
+      const safeName = p.name.replace(/'/g, "\\'");
+
+      tr.innerHTML = `
+        <td class="py-3 px-1 font-bold text-white">${p.name}</td>
+        <td class="py-3 px-1">
+          <div class="flex flex-col gap-1">
+            <div class="flex flex-wrap gap-1">
+              ${p.tags.map(t => `<span class="inline-block px-2 py-0.5 text-[10px] font-bold rounded-full border ${getBadgeClass(t)}">${t}</span>`).join('')}
+            </div>
+            <span class="text-slate-400 text-[11px] leading-tight max-w-sm">${p.notes}</span>
+          </div>
+        </td>
+        <td class="py-3 px-1">
+          <div class="flex items-center gap-2">
+            <div class="w-24 bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+              <div class="bg-gradient-to-r from-brand-500 to-brand-neon h-full rounded-full" style="width: ${p.progress}%"></div>
+            </div>
+            <span class="font-mono text-[11px] text-slate-400">${p.progress}%</span>
+          </div>
+        </td>
+        <td class="py-3 px-1 font-mono text-slate-300">${p.version}</td>
+        <td class="py-3 px-1 text-right">
+          <div class="flex items-center justify-end gap-1">
+            <button onclick="openHistory('${safeName}')" class="px-2.5 py-1 rounded bg-slate-800/80 hover:bg-brand-500/20 hover:text-brand-neon border border-slate-700/60 text-slate-300 text-[11px] font-medium transition-all cursor-pointer">
+              <i class="fa-solid fa-clock-rotate-left mr-1"></i> Logs
+            </button>
+            ${isAdmin ? `<button onclick="deleteProject('${safeName}')" class="px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] transition-all cursor-pointer"><i class="fa-solid fa-trash"></i></button>` : ''}
+          </div>
+        </td>
       `;
       return tr;
     }
 
-    function render(){
-      developedTable.innerHTML=""; devTable.innerHTML="";
-      developedProjects.forEach(p=>developedTable.appendChild(rowFor(p)));
-      devProjects.forEach(p=>devTable.appendChild(rowFor(p)));
-      statTotal.textContent=developedProjects.length+devProjects.length;
-      statDev.textContent=developedProjects.length;
-      statIn.textContent=devProjects.length;
-      statArc.textContent=0;
+    // Grid Card Renderer
+    function renderGridCard(p) {
+      const div = document.createElement('div');
+      div.className = 'glass-panel glass-panel-interactive p-4 rounded-xl flex flex-col justify-between space-y-3';
+      const safeName = p.name.replace(/'/g, "\\'");
+
+      div.innerHTML = `
+        <div class="space-y-2">
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="font-bold text-white text-sm">${p.name}</h3>
+            <span class="font-mono text-[10px] px-2 py-0.5 bg-slate-900 rounded text-brand-neon border border-slate-800">${p.version}</span>
+          </div>
+          <div class="flex flex-wrap gap-1">
+            ${p.tags.map(t => `<span class="px-2 py-0.5 text-[10px] font-bold rounded-full border ${getBadgeClass(t)}">${t}</span>`).join('')}
+          </div>
+          <p class="text-xs text-slate-400 line-clamp-2">${p.notes}</p>
+        </div>
+
+        <div class="space-y-3 pt-2 border-t border-slate-800/80">
+          <div>
+            <div class="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
+              <span>Progress</span>
+              <span>${p.progress}%</span>
+            </div>
+            <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-slate-800">
+              <div class="bg-gradient-to-r from-brand-accent to-brand-neon h-full" style="width: ${p.progress}%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="openHistory('${safeName}')" class="text-xs text-brand-neon hover:underline flex items-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-clock-rotate-left"></i> History Log
+            </button>
+            ${isAdmin ? `<button onclick="deleteProject('${safeName}')" class="text-xs text-rose-400 hover:text-rose-300 cursor-pointer"><i class="fa-solid fa-trash"></i> Remove</button>` : ''}
+          </div>
+        </div>
+      `;
+      return div;
     }
 
-    function openHistory(name){
-      let project=developedProjects.find(p=>p.name===name)||devProjects.find(p=>p.name===name);
-      if(!project)return;
-      historyList.innerHTML="";
-      project.history.forEach(h=>{
-        const div=document.createElement("div");
-        div.className="history-item";
-        div.innerHTML=`<strong>${h}</strong>`;
-        historyList.appendChild(div);
-      });
-      historyModal.classList.add("show");
-    }
+    // Main Render Loop
+    function render() {
+      const developedTbody = document.querySelector("#developedTable tbody");
+      const devTbody = document.querySelector("#devTable tbody");
+      const developedGrid = document.getElementById("developedGridView");
+      const devGrid = document.getElementById("devGridView");
 
-    function closeModal(){historyModal.classList.remove("show")}
+      developedTbody.innerHTML = "";
+      devTbody.innerHTML = "";
+      developedGrid.innerHTML = "";
+      devGrid.innerHTML = "";
 
-    searchInput.addEventListener("input",()=>{
-      const q=searchInput.value.toLowerCase();
-      [developedProjects,devProjects].forEach((list,i)=>{
-        const tbody=i===0?developedTable:devTable;
-        tbody.querySelectorAll("tr").forEach((tr,index)=>{
-          const p=(i===0?developedProjects:devProjects)[index];
-          tr.style.display=p.name.toLowerCase().includes(q)||p.notes.toLowerCase().includes(q)||p.tags.join("").toLowerCase().includes(q)?"":"none";
+      const query = document.getElementById("searchInput").value.toLowerCase();
+
+      // Filter Logic
+      const filterMatches = (p) => {
+        const matchesQuery = p.name.toLowerCase().includes(query) ||
+                             p.notes.toLowerCase().includes(query) ||
+                             p.tags.some(t => t.toLowerCase().includes(query));
+        
+        const matchesTag = (activeFilter === 'all') || 
+                           p.tags.some(t => t.toLowerCase() === activeFilter.toLowerCase());
+
+        return matchesQuery && matchesTag;
+      };
+
+      const filteredReleased = developedProjects.filter(filterMatches);
+      const filteredDev = devProjects.filter(filterMatches);
+
+      // Render Released Items
+      if (filteredReleased.length === 0) {
+        developedTbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500 italic">No matching released projects found</td></tr>`;
+        developedGrid.innerHTML = `<div class="col-span-2 text-center py-6 text-slate-500 text-xs italic">No matching released projects</div>`;
+      } else {
+        filteredReleased.forEach(p => {
+          developedTbody.appendChild(renderTableRow(p));
+          developedGrid.appendChild(renderGridCard(p));
         });
+      }
+
+      // Render Dev Items
+      if (filteredDev.length === 0) {
+        devTbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500 italic">No matching projects currently in development</td></tr>`;
+        devGrid.innerHTML = `<div class="col-span-2 text-center py-6 text-slate-500 text-xs italic">No matching items in active development</div>`;
+      } else {
+        filteredDev.forEach(p => {
+          devTbody.appendChild(renderTableRow(p));
+          devGrid.appendChild(renderGridCard(p));
+        });
+      }
+
+      // Update Statistics Counters
+      document.getElementById("statTotal").textContent = developedProjects.length + devProjects.length;
+      document.getElementById("statDev").textContent = developedProjects.length;
+      document.getElementById("statIn").textContent = devProjects.length;
+      document.getElementById("statArc").textContent = 0;
+      
+      document.getElementById("filteredCountBadge").textContent = filteredReleased.length + filteredDev.length;
+    }
+
+    // View Switching Logic (Table vs Grid)
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      const tableBtn = document.getElementById("viewTableBtn");
+      const gridBtn = document.getElementById("viewGridBtn");
+
+      const devTableView = document.getElementById("developedTableView");
+      const devGridView = document.getElementById("developedGridView");
+      const inDevTableView = document.getElementById("devTableView");
+      const inDevGridView = document.getElementById("devGridView");
+
+      if (mode === 'grid') {
+        tableBtn.className = "px-2.5 py-1 rounded text-xs text-slate-400 hover:text-slate-200 font-medium transition-all";
+        gridBtn.className = "px-2.5 py-1 rounded text-xs text-brand-neon bg-brand-500/20 font-medium transition-all";
+
+        devTableView.classList.add("hidden");
+        devGridView.classList.remove("hidden");
+        inDevTableView.classList.add("hidden");
+        inDevGridView.classList.remove("hidden");
+      } else {
+        tableBtn.className = "px-2.5 py-1 rounded text-xs text-brand-neon bg-brand-500/20 font-medium transition-all";
+        gridBtn.className = "px-2.5 py-1 rounded text-xs text-slate-400 hover:text-slate-200 font-medium transition-all";
+
+        devTableView.classList.remove("hidden");
+        devGridView.classList.add("hidden");
+        inDevTableView.classList.remove("hidden");
+        inDevGridView.classList.add("hidden");
+      }
+    }
+
+    // Filter Pill Selection
+    function setFilterTag(tag) {
+      activeFilter = tag;
+      const container = document.getElementById("filterPillsContainer");
+      const pills = container.querySelectorAll("button");
+
+      pills.forEach(btn => {
+        if ((tag === 'all' && btn.textContent.trim() === 'All') || 
+            btn.textContent.trim().toLowerCase() === tag.toLowerCase() ||
+            (tag === 'In Development' && btn.textContent.trim() === 'In Dev')) {
+          btn.className = "filter-pill px-3 py-1 rounded-md text-xs font-medium bg-brand-500 text-white border border-brand-400/30";
+        } else {
+          btn.className = "filter-pill px-3 py-1 rounded-md text-xs font-medium bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50";
+        }
       });
+
+      render();
+    }
+
+    // Modal Handling for History
+    function openHistory(name) {
+      const project = developedProjects.find(p => p.name === name) || devProjects.find(p => p.name === name);
+      if (!project) return;
+
+      document.getElementById("modalTitle").textContent = project.name;
+      document.getElementById("modalVersionBadge").textContent = project.version;
+      document.getElementById("modalSub").textContent = `${project.notes}`;
+
+      const historyList = document.getElementById("historyList");
+      historyList.innerHTML = "";
+
+      if (project.history.length === 0) {
+        historyList.innerHTML = `<p class="text-xs text-slate-500 italic">No revision entries logged yet.</p>`;
+      } else {
+        project.history.forEach((entry, idx) => {
+          const item = document.createElement("div");
+          item.className = "flex gap-3 items-start relative pl-4 border-l-2 border-brand-500/40 pb-3 last:pb-0";
+          item.innerHTML = `
+            <div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-brand-neon"></div>
+            <div>
+              <div class="text-xs text-slate-200 font-mono font-medium">${entry}</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Revision #${project.history.length - idx} • Verified entry</div>
+            </div>
+          `;
+          historyList.appendChild(item);
+        });
+      }
+
+      document.getElementById("historyModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("historyModal").classList.add("hidden");
+    }
+
+    // Add Project Modal Handling
+    function openAddModal() {
+      document.getElementById("addModal").classList.remove("hidden");
+    }
+
+    function closeAddModal() {
+      document.getElementById("addModal").classList.add("hidden");
+    }
+
+    function handleAddProject(e) {
+      e.preventDefault();
+      const name = document.getElementById("inputName").value.trim();
+      const status = document.getElementById("inputStatus").value;
+      const version = document.getElementById("inputVersion").value.trim();
+      const progress = parseInt(document.getElementById("inputProgress").value, 10);
+      const notes = document.getElementById("inputNotes").value.trim() || "No notes provided.";
+      const historyRaw = document.getElementById("inputHistory").value.trim();
+      const history = historyRaw ? historyRaw.split('\n').filter(h => h.length > 0) : [`Created ${version}`];
+
+      const newProj = {
+        name,
+        tags: [status],
+        notes,
+        progress: isNaN(progress) ? 100 : progress,
+        version,
+        history
+      };
+
+      if (status === "Released") {
+        developedProjects.unshift(newProj);
+      } else {
+        devProjects.unshift(newProj);
+      }
+
+      persistData();
+      render();
+      closeAddModal();
+      document.getElementById("addProjectForm").reset();
+    }
+
+    // Delete Project (Admin Feature)
+    function deleteProject(name) {
+      if (!isAdmin) return;
+      if (confirm(`Remove project '${name}' from Dev Diary?`)) {
+        developedProjects = developedProjects.filter(p => p.name !== name);
+        devProjects = devProjects.filter(p => p.name !== name);
+        persistData();
+        render();
+      }
+    }
+
+    // Export JSON Tool
+    function exportJSON() {
+      const payload = {
+        author: "TempéBreault",
+        timestamp: new Date().toISOString(),
+        released: developedProjects,
+        inDevelopment: devProjects
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `tempe_dev_diary_2027_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // Search Input Controller
+    const searchInput = document.getElementById("searchInput");
+    const clearBtn = document.getElementById("clearSearchBtn");
+
+    searchInput.addEventListener("input", () => {
+      if (searchInput.value.length > 0) {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      render();
     });
 
+    function clearSearch() {
+      searchInput.value = "";
+      clearBtn.classList.add("hidden");
+      render();
+    }
+
+    // Initial render call
     render();
   </script>
 </body>
