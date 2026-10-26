@@ -135,7 +135,7 @@
           <span id="stardateClock" class="tracking-wide">UTC --:--:--</span>
         </div>
         
-        <button id="adminToggleBtn" onclick="toggleAdminMode()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200 transition-all flex items-center gap-2 cursor-pointer">
+        <button id="adminToggleBtn" onclick="handleAdminToggleClick()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200 transition-all flex items-center gap-2 cursor-pointer">
           <i id="adminIcon" class="fa-solid fa-lock text-amber-400"></i>
           <span id="adminModeText">Read-Only</span>
         </button>
@@ -423,6 +423,38 @@
     </div>
   </div>
 
+  <!-- Admin Password Modal -->
+  <div id="passwordModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden transition-all">
+    <div class="glass-panel w-full max-w-sm rounded-2xl border border-cyber-border overflow-hidden shadow-2xl">
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-brand-neon"></i> Admin Verification
+        </h3>
+        <button onclick="closePasswordModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="passwordForm" onsubmit="verifyAdminPassword(event)" class="p-5 space-y-4 text-xs">
+        <div>
+          <label for="adminPasskeyInput" class="block font-semibold text-slate-300 mb-1.5">Enter Admin Security Passkey</label>
+          <div class="relative">
+            <i class="fa-solid fa-key absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+            <input id="adminPasskeyInput" type="password" required placeholder="••••••••••••" class="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon font-mono">
+          </div>
+          <p id="passwordErrorMsg" class="text-[11px] text-rose-400 font-medium mt-1.5 hidden flex items-center gap-1">
+            <i class="fa-solid fa-triangle-exclamation"></i> Incorrect passkey. Access denied.
+          </p>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closePasswordModal()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-400 text-white font-semibold shadow-md shadow-brand-500/20 cursor-pointer">Authenticate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // Initial 2027 Seed Data preserving all user's original entries & logs
     const defaultDevelopedProjects = [
@@ -461,9 +493,48 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Mode Toggle (Read-Only vs Admin Mode)
-    function toggleAdminMode() {
-      isAdmin = !isAdmin;
+    // Admin Access Security Logic
+    function handleAdminToggleClick() {
+      if (isAdmin) {
+        // Exit admin mode directly
+        setAdminState(false);
+      } else {
+        // Require password modal to unlock admin mode
+        openPasswordModal();
+      }
+    }
+
+    function openPasswordModal() {
+      const modal = document.getElementById("passwordModal");
+      const input = document.getElementById("adminPasskeyInput");
+      const err = document.getElementById("passwordErrorMsg");
+      err.classList.add("hidden");
+      input.value = "";
+      modal.classList.remove("hidden");
+      setTimeout(() => input.focus(), 100);
+    }
+
+    function closePasswordModal() {
+      document.getElementById("passwordModal").classList.add("hidden");
+    }
+
+    function verifyAdminPassword(e) {
+      e.preventDefault();
+      const input = document.getElementById("adminPasskeyInput");
+      const err = document.getElementById("passwordErrorMsg");
+
+      if (input.value === "boogieis15") {
+        closePasswordModal();
+        setAdminState(true);
+      } else {
+        err.classList.remove("hidden");
+        input.select();
+      }
+    }
+
+    // Set Admin Mode state UI updates
+    function setAdminState(enable) {
+      isAdmin = enable;
       const text = document.getElementById('adminModeText');
       const icon = document.getElementById('adminIcon');
       const adminPanel = document.getElementById('adminControlsPanel');
